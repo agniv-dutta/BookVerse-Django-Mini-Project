@@ -48,7 +48,7 @@ BookVerse/
 
 1. **Clone the repository**
    ```
-    git clone https://github.com/agniv-dutta/BookVerse-Django-Mini-Project.git
+   git clone https://github.com/agniv-dutta/BookVerse-Django-Mini-Project.git
     
    cd BookVerse-Django-Mini-Project
 2. **Set up virtual environment**
