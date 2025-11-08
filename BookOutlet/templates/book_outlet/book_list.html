@@ -1,0 +1,106 @@
+{% extends "book_outlet/base.html" %}
+{% load static %}
+
+{% block title %}Available Books - BookOutlet{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5">Available Books</h1>
+            <p class="text-muted">Browse our collection of {{ books.count }} books</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="d-flex flex-wrap justify-content-end gap-2">
+                {% if user.is_authenticated %}
+                <a href="{% url 'book_outlet:add_book' %}" class="btn btn-success">
+                    + Add New Book
+                </a>
+                {% endif %}
+                <a href="{% url 'book_outlet:add_user_info' %}" class="btn btn-outline-secondary">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Box -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <form method="get" action="{% url 'book_outlet:book_search' %}">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search books by title or author...">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Books List -->
+    <div class="row">
+        {% for book in books %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <!-- Book Cover - UPDATED -->
+                {% if book.cover_image %}
+                    <img src="{{ book.get_cover_url }}" class="card-img-top" alt="{{ book.title }}" style="height: 320px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'book_outlet/images/book_covers/default_cover.jpg' %}" class="card-img-top" alt="Default cover" style="height: 320px; object-fit: cover;">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text text-muted mb-2">by {{ book.author }}</p>
+                    
+                    <!-- Price and Stock -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="h5 text-primary mb-0">₹{{ book.price }}</span>
+                        {% if book.copies_available > 0 %}
+                            <span class="badge bg-success">{{ book.copies_available }} in stock</span>
+                        {% else %}
+                            <span class="badge bg-danger">Out of stock</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- ISBN -->
+                    {% if book.isbn %}
+                    <small class="text-muted d-block mb-2">ISBN: {{ book.isbn }}</small>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">ID: {{ book.id }}</small>
+                        <div class="action-buttons">
+                            <a href="{% url 'book_outlet:book_details' book.id %}" class="btn btn-outline-primary btn-sm">
+                                Details
+                            </a>
+                            {% if user.is_authenticated and book.copies_available > 0 %}
+<form method="post" action="{% url 'book_outlet:add_to_cart' book.id %}" class="d-inline">
+    {% csrf_token %}
+    <input type="hidden" name="quantity" value="1">
+    <button type="submit" class="btn btn-primary btn-sm ms-1">Add to Cart</button>
+</form>
+{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-info">
+                <h4 class="alert-heading">No books available yet</h4>
+                <p class="mb-3">Be the first to add a book to our collection!</p>
+                {% if user.is_authenticated %}
+                <a href="{% url 'book_outlet:add_book' %}" class="btn btn-primary">Add the First Book</a>
+                {% else %}
+                <a href="{% url 'book_outlet:login' %}" class="btn btn-primary">Login to Add Books</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

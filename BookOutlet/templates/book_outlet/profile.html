@@ -1,0 +1,47 @@
+{% extends "book_outlet/base.html" %}
+
+{% block title %}Your Profile - BookOutlet{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Your Profile</h2>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Account Information</h5>
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Joined:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+                </div>
+            </div>
+        </div>
+        
+        {% if profile %}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Profile Details</h5>
+                    <p><strong>Bio:</strong> {{ profile.bio|default:"Not set" }}</p>
+                    <p><strong>Location:</strong> {{ profile.location|default:"Not set" }}</p>
+                    <p><strong>Favorite Genres:</strong> {{ profile.favorite_genres|default:"Not set" }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Action Buttons Section -->
+    <div class="mt-4">
+        <a href="{% url 'book_outlet:book_list' %}" class="btn btn-primary">Browse Books</a>
+        <a href="{% url 'book_outlet:add_book' %}" class="btn btn-success">Add New Book</a>
+        <!-- Add this order tracking button -->
+        <a href="{% url 'book_outlet:order_list' %}" class="btn btn-info">Track My Orders</a>
+        <form method="post" action="{% url 'book_outlet:logout' %}" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger">Logout</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

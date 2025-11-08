@@ -1,0 +1,67 @@
+{% extends 'book_outlet/base.html' %}
+{% load static %}
+
+{% block title %}My Orders - BookStore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>My Orders</h1>
+    
+    {% if orders %}
+    {% for order in orders %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-1">
+                    <!-- Order Items Preview with Covers -->
+                    <div class="d-flex">
+                        {% for item in order.items.all|slice:":3" %}
+                        <div class="me-1">
+                            {% if item.book.cover_image %}
+                                <img src="{{ item.book.get_cover_url }}" alt="{{ item.book.title }}" 
+                                     class="rounded border" style="width: 40px; height: 55px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'book_outlet/images/book_covers/default_cover.jpg' %}" alt="Default cover" 
+                                     class="rounded border" style="width: 40px; height: 55px; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% if order.items.count > 3 %}
+                        <div class="bg-light rounded border d-flex align-items-center justify-content-center" 
+                             style="width: 40px; height: 55px;">
+                            <small class="text-muted">+{{ order.items.count|add:"-3" }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <h5 class="card-title">Order #{{ order.order_number }}</h5>
+                    <p class="card-text">
+                        <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% else %}warning{% endif %}">
+                            {{ order.status|title }}
+                        </span>
+                    </p>
+                    <p class="card-text text-muted">Placed on {{ order.created_at|date:"M d, Y" }}</p>
+                </div>
+                <div class="col-md-3 text-end">
+                    <h5>₹{{ order.total_amount }}</h5>
+                    <p>{{ order.items.count }} item(s)</p>
+                </div>
+                <div class="col-md-3 text-end">
+                    <a href="{% url 'book_outlet:order_detail' order.id %}" class="btn btn-outline-primary">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="text-center py-5">
+        <h4 class="text-muted">No orders yet</h4>
+        <p>Start shopping to see your orders here!</p>
+        <a href="{% url 'book_outlet:book_list' %}" class="btn btn-primary">Browse Books</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

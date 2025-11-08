@@ -1,0 +1,97 @@
+{% extends "book_outlet/base.html" %}
+{% load static %}
+
+{% block title %}Shopping Cart - BookOutlet{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Shopping Cart</h1>
+    
+    {% if cart_items %}
+    <div class="row">
+        <div class="col-md-8">
+            {% for item in cart_items %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <!-- Book Cover -->
+                        <div class="col-md-2">
+                            {% if item.book.cover_image %}
+                                <img src="{{ item.book.get_cover_url }}" alt="{{ item.book.title }}" class="img-fluid rounded" style="height: 80px; object-fit: cover;">
+                            {% else %}
+                                <img src="{% static 'book_outlet/images/book_covers/default_cover.jpg' %}" alt="Default cover" class="img-fluid rounded" style="height: 80px; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3">
+                            <h5 class="card-title">{{ item.book.title }}</h5>
+                            <p class="card-text text-muted">by {{ item.book.author }}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <p class="mb-0">₹{{ item.book.price }}</p>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="d-flex align-items-center">
+                                <form method="post" action="{% url 'book_outlet:update_cart_item' item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="decrease">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary" {% if item.quantity <= 1 %}disabled{% endif %}>-</button>
+                                </form>
+                                <span class="mx-2">{{ item.quantity }}</span>
+                                <form method="post" action="{% url 'book_outlet:update_cart_item' item.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="increase">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">+</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <p class="mb-0"><strong>₹{{ item.get_total_price }}</strong></p>
+                        </div>
+                        <div class="col-md-1">
+                            <a href="{% url 'book_outlet:remove_from_cart' item.id %}" class="btn btn-danger btn-sm">×</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Order Summary</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total Items:</span>
+                        <span>{{ cart_items|length }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Total Quantity:</span>
+                        <span>{{ total_quantity }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total Amount:</strong>
+                        <strong>₹{{ total_price }}</strong>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <!-- FIXED: Changed button to link that goes to checkout page -->
+                        <a href="{% url 'book_outlet:checkout' %}" class="btn btn-primary btn-lg">
+                            Proceed to Checkout
+                        </a>
+                        <a href="{% url 'book_outlet:book_list' %}" class="btn btn-outline-secondary">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <div class="alert alert-info">
+            <h4 class="alert-heading">Your cart is empty</h4>
+            <p class="mb-3">Start adding some books to your cart!</p>
+            <a href="{% url 'book_outlet:book_list' %}" class="btn btn-primary">Browse Books</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

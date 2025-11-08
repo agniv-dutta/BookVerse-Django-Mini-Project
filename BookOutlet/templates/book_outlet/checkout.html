@@ -1,0 +1,69 @@
+{% extends 'book_outlet/base.html' %}
+{% load static %}
+
+{% block title %}Checkout - BookStore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Checkout</h1>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="shipping_address" class="form-label">Shipping Address</label>
+                            <textarea class="form-control" id="shipping_address" name="shipping_address" 
+                                      rows="4" placeholder="Enter your complete shipping address..." required></textarea>
+                        </div>
+                        
+                        <h5 class="mt-4">Order Items</h5>
+                        {% for item in cart_items %}
+                        <div class="border-bottom py-2 d-flex align-items-center">
+                            <!-- ✅ Added Book Cover -->
+                            <div class="me-3">
+                                {% if item.book.cover_image %}
+                                    <img src="{{ item.book.get_cover_url }}" alt="{{ item.book.title }}" class="rounded" style="width: 50px; height: 70px; object-fit: cover;">
+                                {% else %}
+                                    <img src="{% static 'book_outlet/images/book_covers/default_cover.jpg' %}" alt="Default cover" class="rounded" style="width: 50px; height: 70px; object-fit: cover;">
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong>{{ item.book.title }}</strong><br>
+                                <small class="text-muted">by {{ item.book.author }}</small>
+                            </div>
+                            <span class="float-end">
+                                {{ item.quantity }} x ₹{{ item.book.price }} = ₹{{ item.get_total_price }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                Place Order - ₹{{ total_price }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Order Total</h5>
+                </div>
+                <div class="card-body">
+                    <h4>₹{{ total_price }}</h4>
+                    <p class="text-muted">Includes all items in your cart</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

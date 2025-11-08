@@ -1,0 +1,168 @@
+{% extends 'book_outlet/base.html' %}
+{% load static %}
+
+{% block title %}Advanced Book Search - BookStore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Advanced Book Search</h1>
+    
+    <!-- Search Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <!-- Search Input -->
+                <div class="col-md-4">
+                    <input type="text" name="q" class="form-control" 
+                           placeholder="Search by title or author..." 
+                           value="{{ search_query }}">
+                </div>
+                
+                <!-- Genre Filter -->
+                <div class="col-md-2">
+                    <select name="genre" class="form-select">
+                        <option value="">All Genres</option>
+                        {% for genre in genres %}
+                        <option value="{{ genre }}" 
+                                {% if current_filters.genre == genre %}selected{% endif %}>
+                            {{ genre }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Price Range -->
+                <div class="col-md-2">
+                    <input type="number" name="min_price" class="form-control" 
+                           placeholder="Min Price" step="0.01" min="0"
+                           value="{{ current_filters.min_price }}">
+                </div>
+                
+                <div class="col-md-2">
+                    <input type="number" name="max_price" class="form-control" 
+                           placeholder="Max Price" step="0.01" min="0"
+                           value="{{ current_filters.max_price }}">
+                </div>
+                
+                <!-- Rating Filter -->
+                <div class="col-md-2">
+                    <select name="min_rating" class="form-select">
+                        <option value="">Any Rating</option>
+                        <option value="4.5" {% if current_filters.min_rating == '4.5' %}selected{% endif %}>4.5+ Stars</option>
+                        <option value="4.0" {% if current_filters.min_rating == '4.0' %}selected{% endif %}>4.0+ Stars</option>
+                        <option value="3.5" {% if current_filters.min_rating == '3.5' %}selected{% endif %}>3.5+ Stars</option>
+                        <option value="3.0" {% if current_filters.min_rating == '3.0' %}selected{% endif %}>3.0+ Stars</option>
+                    </select>
+                </div>
+                
+                <!-- Sort Options -->
+                <div class="col-md-2">
+                    <select name="sort_by" class="form-select">
+                        <option value="newest" {% if current_filters.sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="title" {% if current_filters.sort_by == 'title' %}selected{% endif %}>Title A-Z</option>
+                        <option value="price_low" {% if current_filters.sort_by == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="price_high" {% if current_filters.sort_by == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                        <option value="rating" {% if current_filters.sort_by == 'rating' %}selected{% endif %}>Highest Rated</option>
+                    </select>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+                
+                <div class="col-md-2">
+                    <a href="{% url 'book_outlet:book_search' %}" class="btn btn-outline-secondary w-100">Clear</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Results Count -->
+    <div class="mb-3">
+        <p class="text-muted">Found <strong>{{ books.count }}</strong> books matching your criteria</p>
+    </div>
+    
+    <!-- Books Grid -->
+    <div class="row">
+        {% for book in books %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 book-card">
+                <!-- ✅ Added Book Cover -->
+                <div class="text-center mt-3">
+                    {% if book.cover_image %}
+                        <img src="{{ book.get_cover_url }}" alt="{{ book.title }}" class="card-img-top rounded" style="height: 200px; width: auto; object-fit: contain;">
+                    {% else %}
+                        <img src="{% static 'book_outlet/images/book_covers/default_cover.jpg' %}" alt="Default cover" class="card-img-top rounded" style="height: 200px; width: auto; object-fit: contain;">
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text text-muted">by {{ book.author }}</p>
+                    
+                    {% if book.genre %}
+                    <span class="badge bg-primary mb-2">{{ book.genre }}</span>
+                    {% endif %}
+                    
+                    {% if book.rating %}
+                    <div class="mb-2">
+                        <small class="text-warning">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= book.rating %}
+                                    ⭐
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            {% endfor %}
+                            ({{ book.rating }})
+                        </small>
+                    </div>
+                    {% endif %}
+                    
+                    {% if book.price %}
+                    <h6 class="text-success">₹{{ book.price }}</h6>
+                    {% endif %}
+                    
+                    <!-- View Details Button -->
+                    <a href="{% url 'book_outlet:book_details' book.pk %}" class="btn btn-sm btn-outline-primary mt-2">
+                        View Details
+                    </a>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">ID: {{ book.id }}</small>
+                    {% if book.created_by %}
+                    <br>
+                    <small class="text-muted">Added by: {{ book.created_by.username }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <h4 class="text-muted">No books found matching your criteria.</h4>
+                <p>Try adjusting your search filters or <a href="{% url 'book_outlet:add_book' %}">add a new book</a>.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.book-card {
+    transition: transform 0.2s;
+    border-left: 4px solid #007bff;
+}
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.form-select, .form-control {
+    border: 2px solid #e9ecef;
+}
+.form-select:focus, .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+}
+</style>
+{% endblock %}

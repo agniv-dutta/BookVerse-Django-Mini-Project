@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>React Form in Django</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>React Form in Django Template</h1>
+        
+        <!-- Django Content -->
+        <div class="alert alert-info">
+            <strong>Django Server Time:</strong> {% now "Y-m-d H:i:s" %}
+        </div>
+
+        <!-- React Form Component -->
+        <div id="react-form-container"></div>
+    </div>
+
+    <!-- React CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    {% verbatim react_form %}
+    <script type="text/babel">
+        const { useState } = React;
+
+        function BookForm() {
+            const [formData, setFormData] = useState({
+                title: '',
+                author: ''
+            });
+            const [message, setMessage] = useState('');
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                try {
+                    const response = await axios.post('http://127.0.0.1:8000/api/books/', formData);
+                    setMessage('✅ Book added successfully via React!');
+                    setFormData({ title: '', author: '' });
+                    
+                    // Clear message after 3 seconds
+                    setTimeout(() => setMessage(''), 3000);
+                } catch (error) {
+                    setMessage('❌ Error adding book. Check console for details.');
+                    console.error('Error:', error.response?.data);
+                }
+            };
+
+            const handleChange = (e) => {
+                setFormData({
+                    ...formData,
+                    [e.target.name]: e.target.value
+                });
+            };
+
+            return React.createElement('div', { className: 'card mt-4' },
+                React.createElement('div', { className: 'card-header' },
+                    React.createElement('h5', null, '📝 Add Book (React Component)')
+                ),
+                React.createElement('div', { className: 'card-body' },
+                    message && React.createElement('div', { 
+                        className: `alert ${message.includes('✅') ? 'alert-success' : 'alert-danger'}`
+                    }, message),
+                    
+                    React.createElement('form', { onSubmit: handleSubmit },
+                        React.createElement('div', { className: 'mb-3' },
+                            React.createElement('label', { className: 'form-label' }, 'Book Title'),
+                            React.createElement('input', {
+                                type: 'text',
+                                name: 'title',
+                                className: 'form-control',
+                                value: formData.title,
+                                onChange: handleChange,
+                                placeholder: 'Enter book title',
+                                required: true
+                            })
+                        ),
+                        React.createElement('div', { className: 'mb-3' },
+                            React.createElement('label', { className: 'form-label' }, 'Author'),
+                            React.createElement('input', {
+                                type: 'text',
+                                name: 'author',
+                                className: 'form-control',
+                                value: formData.author,
+                                onChange: handleChange,
+                                placeholder: 'Enter author name',
+                                required: true
+                            })
+                        ),
+                        React.createElement('button', { 
+                            type: 'submit',
+                            className: 'btn btn-primary'
+                        }, 'Add Book via React')
+                    )
+                )
+            );
+        }
+
+        // Render the form
+        ReactDOM.render(
+            React.createElement(BookForm),
+            document.getElementById('react-form-container')
+        );
+    </script>
+    {% endverbatim react_form %}
+</body>
+</html>

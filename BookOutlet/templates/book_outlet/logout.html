@@ -1,0 +1,23 @@
+{% extends "book_outlet/base.html" %}
+
+{% block title %}Logged Out - BookOutlet{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="text-success">Successfully Logged Out</h2>
+                    <p class="mt-3">You have been successfully logged out of your account.</p>
+                    
+                    <div class="mt-4">
+                        <a href="{% url 'book_outlet:login' %}" class="btn btn-primary me-2">Login Again</a>
+                        <a href="{% url 'book_outlet:home' %}" class="btn btn-outline-secondary">Go to Homepage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

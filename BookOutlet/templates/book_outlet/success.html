@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success - BookOutlet</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'book_outlet/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="success-message">
+            <h1> Success!</h1>
+            <p>Your form has been submitted successfully.</p>
+            <p>Thank you for your submission.</p>
+            
+            <div class="success-actions">
+                <a href="{% url 'book_outlet:add_book' %}" class="btn btn-primary">Add Another Book</a>
+                <a href="{% url 'book_outlet:add_user_info' %}" class="btn btn-secondary">Submit Another Message</a>
+                <a href="{% url 'book_outlet:book_list' %}" class="btn btn-outline">Back to Book List</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,460 @@
+/* BookOutlet Styles - Fixed Version */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)), 
+                url('../images/background.jpeg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-color: #f8f9fa; /* Fallback if image doesn't load */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* ===== FIXED NAVBAR STYLES ===== */
+.navbar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    padding: 0.8rem 1rem !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-bottom: none !important;
+}
+
+.navbar-brand {
+    color: #ffffff !important;
+    font-weight: bold;
+    font-size: 1.5rem !important;
+    padding: 0 !important;
+}
+
+.navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    padding: 8px 15px !important;
+    margin: 0 2px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Ensure navbar toggler is visible on mobile */
+.navbar-toggler {
+    border-color: rgba(255,255,255,0.5) !important;
+    padding: 4px 8px !important;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
+/* Dropdown menu styling */
+.navbar-nav .dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background: white !important;
+}
+
+.navbar-nav .dropdown-menu .dropdown-item {
+    color: #333 !important;
+    padding: 8px 16px;
+    transition: all 0.2s ease;
+}
+
+.navbar-nav .dropdown-menu .dropdown-item:hover {
+    color: #fff !important;
+    background-color: #007bff;
+}
+
+/* Cart icon styling */
+.navbar-nav .nav-link svg {
+    margin-right: 5px;
+}
+
+/* Cart badge styling */
+.navbar-nav .nav-link .badge {
+    font-size: 0.7rem;
+    padding: 4px 6px;
+    background-color: #ff4757 !important;
+    color: white !important;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+/* ===== HERO SECTION ===== */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 15px;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero-section .lead {
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* ===== CARD STYLES ===== */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.book-card {
+    border-left: 4px solid #007bff;
+}
+
+.card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* ===== BUTTON STYLES ===== */
+.btn {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    padding: 10px 20px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #0056b3, #004085);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #28a745, #1e7e34);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(45deg, #1e7e34, #155724);
+}
+
+.btn-outline-primary:hover {
+    background: #007bff;
+    color: white;
+}
+
+/* ===== BOOK ITEMS ===== */
+.book-list {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0 0 0;
+}
+
+.book-item {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.book-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+/* ===== FORM STYLES ===== */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    transform: translateY(-1px);
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* ===== MESSAGES & ALERTS ===== */
+.messages {
+    margin: 20px 0;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: none;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: linear-gradient(45deg, #d4edda, #c3e6cb);
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-error, .alert-danger {
+    background: linear-gradient(45deg, #f8d7da, #f5c6cb);
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-info {
+    background: linear-gradient(45deg, #d1ecf1, #bee5eb);
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+/* Success message animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== BOOK DETAIL CARD ===== */
+.book-detail-card {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+}
+
+.book-info {
+    margin: 20px 0;
+}
+
+.book-info p {
+    font-size: 16px;
+    margin: 10px 0;
+    padding: 8px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.book-info strong {
+    color: #495057;
+    min-width: 80px;
+    display: inline-block;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.action-buttons {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.success-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.no-books {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.no-books a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.no-books a:hover {
+    text-decoration: underline;
+}
+
+/* ===== DASHBOARD CARDS ===== */
+.dashboard-section .card {
+    text-align: center;
+    padding: 20px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.dashboard-section .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.dashboard-section .card h5 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dashboard-section .card p {
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+/* ===== STATS SECTION ===== */
+.stats-section .card {
+    text-align: center;
+    padding: 30px 20px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.stats-section .card h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.stats-section .card p {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+    
+    .hero-section {
+        padding: 2rem 1rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .book-item {
+        padding: 12px 15px;
+    }
+    
+    .action-buttons {
+        text-align: left;
+    }
+    
+    .btn {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
+    }
+    
+    .navbar-nav .nav-link {
+        padding: 10px 15px !important;
+        margin: 2px 0;
+    }
+    
+    .navbar {
+        padding: 0.5rem 1rem !important;
+    }
+}
+
+/* React Component Styles */
+.react-book-section {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    border: 2px solid #e9ecef;
+    margin-bottom: 30px;
+}
+
+.react-book-card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    border-left: 4px solid #007bff;
+}
+
+.react-book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.search-stats {
+    font-weight: bold;
+}
+
+.loading {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.price-section {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+/* Floating message styles from base.html */
+.floating-message {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

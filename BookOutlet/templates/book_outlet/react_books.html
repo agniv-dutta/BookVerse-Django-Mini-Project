@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BookStore - Django + React Hybrid</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'book_outlet/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Django Template Content -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1>📚 BookStore - Django + React Hybrid</h1>
+                <p class="text-muted">Traditional Django templates with embedded React components</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="navigation-links">
+                    <a href="{% url 'book_outlet:add_book' %}" class="btn btn-primary me-2">
+                        Add New Book (Django Form)
+                    </a>
+                    <a href="{% url 'book_outlet:add_user_info' %}" class="btn btn-secondary">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- React Component Container -->
+        <div id="react-book-search"></div>
+
+        <!-- Traditional Django Book List -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3>Traditional Django Book List</h3>
+                <div class="book-list">
+                    {% for book in books %}
+                    <div class="book-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h5 class="mb-1">{{ book.title }}</h5>
+                                <p class="mb-0 text-muted">by {{ book.author }}</p>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <span class="badge bg-light text-dark">ID: {{ book.pk }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5">
+                        <h4 class="text-muted">No books available yet.</h4>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- React and Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- Embedded React JSX Component -->
+    {% verbatim react_component %}
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // React Book Search Component
+        function BookSearch() {
+            const [books, setBooks] = useState([]);
+            const [searchTerm, setSearchTerm] = useState('');
+            const [loading, setLoading] = useState(true);
+
+            // Fetch books from Django REST API
+            useEffect(() => {
+                fetchBooks();
+            }, []);
+
+            const fetchBooks = async () => {
+                try {
+                    const response = await axios.get('http://127.0.0.1:8000/api/books/');
+                    setBooks(response.data);
+                } catch (error) {
+                    console.error('Error fetching books:', error);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const filteredBooks = books.filter(book =>
+                book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                book.author.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            // JSX with React styling
+            return React.createElement('div', { className: 'react-book-section' },
+                React.createElement('h3', { className: 'mb-4' }, '🔍 React-Powered Book Search'),
+                React.createElement('div', { className: 'row mb-4' },
+                    React.createElement('div', { className: 'col-md-6' },
+                        React.createElement('input', {
+                            type: 'text',
+                            className: 'form-control',
+                            placeholder: 'Search books using React...',
+                            value: searchTerm,
+                            onChange: (e) => setSearchTerm(e.target.value)
+                        })
+                    )
+                ),
+                React.createElement('div', { className: 'search-stats mb-3' },
+                    React.createElement('small', { className: 'text-muted' }, 
+                        `Found ${filteredBooks.length} books matching your search`
+                    )
+                ),
+                loading ? 
+                    React.createElement('div', { className: 'loading text-center py-4' }, 'Loading React component...') :
+                    React.createElement('div', { className: 'row' },
+                        filteredBooks.map(book => 
+                            React.createElement('div', { 
+                                key: book.id, 
+                                className: 'col-md-6 mb-3'
+                            },
+                                React.createElement('div', { 
+                                    className: 'card react-book-card h-100'
+                                },
+                                    React.createElement('div', { className: 'card-body' },
+                                        React.createElement('h5', { className: 'card-title' }, book.title),
+                                        React.createElement('p', { className: 'card-text text-muted' }, 
+                                            `by ${book.author}`
+                                        ),
+                                        React.createElement('div', { className: 'mt-2' },
+                                            React.createElement('span', { 
+                                                className: 'badge bg-primary'
+                                            }, `ID: ${book.id}`)
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+            );
+        }
+
+        // Render React component
+        ReactDOM.render(
+            React.createElement(BookSearch),
+            document.getElementById('react-book-search')
+        );
+    </script>
+    {% endverbatim react_component %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

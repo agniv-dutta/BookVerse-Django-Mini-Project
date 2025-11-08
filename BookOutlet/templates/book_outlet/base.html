@@ -1,0 +1,303 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BookVerse - Your Favorite Book Store{% endblock %}</title>
+    
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'book_outlet/css/styles.css' %}">
+
+    <style>
+        /* NUCLEAR FIX FOR WHITE BAR */
+        nav.navbar,
+        .navbar,
+        .bg-primary,
+        [class*="navbar"],
+        [class*="nav-bar"] {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            background-color: #667eea !important;
+            padding: 0.5rem 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            min-height: 60px !important;
+        }
+        
+        /* Remove any white background from navbar children */
+        .navbar * {
+            background: transparent !important;
+        }
+        
+        /* Ensure container inside navbar doesn't have white background */
+        .navbar .container {
+            background: transparent !important;
+            padding: 0 1rem !important;
+            margin: 0 !important;
+        }
+        
+        /* Force remove any borders */
+        .navbar,
+        .navbar * {
+            border: none !important;
+            outline: none !important;
+        }
+        
+        /* Body margin/padding reset */
+        body {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        /* NAVBAR SPACING FIX */
+        .navbar-nav.me-auto {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .navbar-nav .nav-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .navbar-nav .nav-link {
+            padding: 0.5rem 1rem !important;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Right side items spacing */
+        .navbar-nav.ms-auto {
+            gap: 1rem;
+        }
+
+        /* Ensure proper spacing */
+        @media (min-width: 992px) {
+            .navbar-collapse {
+                display: flex !important;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .navbar-brand {
+                margin-right: 3rem !important;
+            }
+        }
+
+        .floating-message {
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Navbar styling */
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar - UPDATED FOR EVEN SPACING -->
+    <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+        <div class="container-fluid">  <!-- Changed to container-fluid for full width -->
+            <a class="navbar-brand" href="{% url 'book_outlet:home' %}">
+                <strong>BookVerse</strong>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Centered Navigation Items -->
+                <ul class="navbar-nav mx-auto">  <!-- Changed to mx-auto for centering -->
+                    <li class="nav-item mx-2">
+                        <a class="nav-link text-center" href="{% url 'book_outlet:home' %}">
+                            Home
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link text-center" href="{% url 'book_outlet:book_list' %}">
+                            All Books
+                        </a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link text-center" href="{% url 'book_outlet:book_search' %}">
+                            Search
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item mx-2">
+                        <a class="nav-link text-center" href="{% url 'book_outlet:add_book' %}">
+                            Add Book
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <!-- Right-aligned User Items -->
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <!-- Cart Icon with Badge -->
+                    <li class="nav-item me-3">
+                        <a class="nav-link position-relative text-center" href="{% url 'book_outlet:cart' %}">
+                            Cart
+                            {% if cart_items_count > 0 %}
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ cart_items_count }}
+                                <span class="visually-hidden">items in cart</span>
+                            </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    
+                    <!-- User Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-center" href="#" role="button" data-bs-toggle="dropdown">
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'book_outlet:profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'book_outlet:order_list' %}">My Orders</a></li> 
+                            <li><a class="dropdown-item" href="{% url 'book_outlet:add_book' %}">Add Book</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'book_outlet:logout' %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item">Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item me-2">
+                        <a class="nav-link text-center" href="{% url 'book_outlet:login' %}">
+                            Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-center" href="{% url 'book_outlet:register' %}">
+                            Register
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+        <footer class="text-center mt-5 py-3 text-muted">
+            <p>&copy; 2025 BookVerse. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{% static 'book_outlet/js/main.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+
+    <!-- Floating Messages Script -->
+    <script>
+    // Function to show floating message
+    function showFloatingMessage(message, type = 'success') {
+        const floatingDiv = document.createElement('div');
+        floatingDiv.className = `alert alert-${type} floating-message`;
+        floatingDiv.innerHTML = `
+            <div class="d-flex align-items-center">
+                <span class="me-2"></span>
+                <span>${message}</span>
+                <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+            </div>
+        `;
+        
+        // Add styles
+        floatingDiv.style.cssText = `
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        
+        document.body.appendChild(floatingDiv);
+        
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            if (floatingDiv.parentElement) {
+                floatingDiv.remove();
+            }
+        }, 3000);
+    }
+
+    // Check for Django messages and convert to floating messages
+    document.addEventListener('DOMContentLoaded', function() {
+        const djangoMessages = document.querySelectorAll('.alert');
+        djangoMessages.forEach(alert => {
+            const message = alert.textContent.trim();
+            if (message.includes('Added') || message.includes('Increased') || message.includes('cart')) {
+                showFloatingMessage(message, 'success');
+            }
+        });
+    });
+
+    // Additional script to ensure navbar spacing
+    document.addEventListener('DOMContentLoaded', function() {
+        // Force navbar to use full width
+        const navbar = document.querySelector('.navbar');
+        if (navbar) {
+            navbar.style.width = '100%';
+        }
+        
+        // Ensure container-fluid uses full width
+        const containerFluid = document.querySelector('.navbar .container-fluid');
+        if (containerFluid) {
+            containerFluid.style.maxWidth = '100%';
+            containerFluid.style.padding = '0 2rem';
+        }
+    });
+    </script>
+</body>
+</html>

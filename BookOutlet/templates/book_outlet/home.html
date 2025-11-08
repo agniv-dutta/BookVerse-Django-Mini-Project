@@ -1,0 +1,156 @@
+{% extends "book_outlet/base.html" %}
+
+{% block title %}Welcome to BookVerse - Your Favorite Book Store{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center py-5 bg-light rounded mb-5">
+    <h1 class="display-4 text-primary">Welcome to BookVerse</h1>
+    <p class="lead">Discover your next favorite book from our extensive collection</p>
+    <div class="mt-4">
+        <a href="{% url 'book_outlet:book_list' %}" class="btn btn-primary btn-lg me-3">
+            Browse All Books
+        </a>
+        <a href="{% url 'book_outlet:book_search' %}" class="btn btn-outline-primary btn-lg">
+            Search Books
+        </a>
+    </div>
+</div>
+
+<!-- Dashboard Section -->
+<div class="dashboard-section mb-5">
+    <h2 class="text-center mb-4">Quick Navigation</h2>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">All Books</h5>
+                    <p class="card-text">Browse our complete collection</p>
+                    <a href="{% url 'book_outlet:book_list' %}" class="btn btn-primary">View Books</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Add Book</h5>
+                    <p class="card-text">Contribute to our collection</p>
+                    <a href="{% url 'book_outlet:add_book' %}" class="btn btn-success">Add New Book</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Search</h5>
+                    <p class="card-text">Find specific books</p>
+                    <a href="{% url 'book_outlet:book_search' %}" class="btn btn-info">Search Books</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Profile</h5>
+                    <p class="card-text">Manage your account</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'book_outlet:profile' %}" class="btn btn-warning">Your Profile</a>
+                    {% else %}
+                        <a href="{% url 'book_outlet:login' %}" class="btn btn-warning">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Info Display -->
+{% if user.is_authenticated and stats.cart_items_count > 0 %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    🛒 You have {{ stats.cart_items_count }} item{{ stats.cart_items_count|pluralize }} in your cart
+    <a href="{% url 'book_outlet:cart' %}" class="alert-link">View Cart</a>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+<!-- Statistics Section -->
+<div class="stats-section mb-5">
+    <h2 class="text-center mb-4">Store Statistics</h2>
+    <div class="row text-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-primary">{{ stats.total_books }}</h3>
+                    <p class="card-text">Total Books</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-success">{{ stats.total_reviews }}</h3>
+                    <p class="card-text">Book Reviews</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="text-info">{{ stats.total_users }}</h3>
+                    <p class="card-text">Registered Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Books Section -->
+{% if recent_books %}
+<div class="recent-books-section mb-5">
+    <h2 class="text-center mb-4">Recently Added Books</h2>
+    <div class="row">
+        {% for book in recent_books %}
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text text-muted">by {{ book.author }}</p>
+                    <a href="{% url 'book_outlet:book_details' book.id %}" class="btn btn-outline-primary btn-sm">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- About Us Section -->
+<div class="about-section bg-light p-5 rounded">
+    <h2 class="text-center mb-4">About BookVerse</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Our Story</h4>
+            <p>BookVerse was founded with a simple mission: to connect readers with their next favorite book. We believe that everyone should have access to a wide variety of books and a platform to share their literary discoveries.</p>
+        </div>
+        <div class="col-md-6">
+            <h4>What We Offer</h4>
+            <ul>
+                <li>Extensive collection of books across all genres</li>
+                <li>User-friendly book search and discovery</li>
+                <li>Community-driven reviews and ratings</li>
+                <li>Easy book submission and management</li>
+                <li>Personalized reading recommendations</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <h4>Join Our Community</h4>
+            <p>Register today to start adding books, writing reviews, and connecting with fellow book lovers!</p>
+            <a href="{% url 'book_outlet:register' %}" class="btn btn-primary">Get Started</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
